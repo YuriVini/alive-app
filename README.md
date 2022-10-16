@@ -1,6 +1,9 @@
 ## Alive-app
 
-![Capa (1)](Simulator Screen Recording - iPhone 14 Pro Max - 2022-10-16 at 12.00.13.mp4)
+
+https://user-images.githubusercontent.com/50464472/196043670-c99d2013-f152-477a-8572-82195bee2c83.mp4
+
+
 
 ## 💻 Projeto
 
