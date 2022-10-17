@@ -25,3 +25,9 @@ export type StockGainsResponse = {
   purchasedAt: Date;
   capitalGains: number;
 };
+
+export type StockGainsRequest = {
+  stockName: string;
+  purchasedAt: Date;
+  purchasedAmount: number;
+};

@@ -1,5 +1,7 @@
+import { useMutation } from "@tanstack/react-query";
 import { adgrowthAPI } from ".";
 import {
+  StockGainsRequest,
   StockGainsResponse,
   StockHistoryResponse,
   StockQuoteResponse,
@@ -13,11 +15,15 @@ export const getStockHistory = (stockName: string, from: number, to: number) =>
     params: { from, to },
   });
 
-export const getStockGains = (
-  stockName: string,
-  purchasedAt: Date,
-  purchasedAmount: number
-) =>
-  adgrowthAPI.get<StockGainsResponse>(`/stocks/${stockName}/gains/`, {
-    params: { purchasedAt, purchasedAmount },
-  });
+export const getStockGains = () => {
+  return useMutation<StockGainsResponse, Error, StockGainsRequest>((data) =>
+    adgrowthAPI
+      .get(`/stocks/${data.stockName}/gains/`, {
+        params: {
+          purchasedAt: data.purchasedAt,
+          purchasedAmount: data.purchasedAmount,
+        },
+      })
+      .then((response) => response.data)
+  );
+};

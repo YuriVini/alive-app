@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useReducer } from "react";
+import React, { Dispatch, SetStateAction, useEffect } from "react";
 import { format } from "date-fns";
 import { Alert, Text, TouchableOpacity, View } from "react-native";
 import { getStockGains } from "../../services/api";
@@ -13,7 +13,6 @@ import {
 } from "@react-navigation/native";
 import { ROUTES } from "../../routes/appRoutes";
 import { Skeleton } from "moti/skeleton";
-import { useQuery } from "@tanstack/react-query";
 
 type StockGainsProps = {
   data: StockQuoteResponse[];
@@ -21,8 +20,6 @@ type StockGainsProps = {
 };
 
 const StockGains = ({ data, setModalVisible }: StockGainsProps) => {
-  const [visible, toggle] = useReducer((s) => !s, true);
-
   const navigation = useNavigation<NavigationProp<ParamListBase>>();
 
   const handleGoToStockDetails = () => {
@@ -32,104 +29,83 @@ const StockGains = ({ data, setModalVisible }: StockGainsProps) => {
     });
   };
 
-  const {
-    data: gainsResult,
-    isSuccess,
-    isError,
-  } = useQuery(["gains"], async () => {
-    const gains = await getStockGains(
-      data[0]?.name,
-      data[0]?.pricedAt,
-      data[0]?.lastPrice
-    );
-    if (isSuccess) {
-      toggle();
-      return gains;
-    } else if (isError) {
-      toggle();
-      setModalVisible(false);
-      return Alert.alert("Não foi possível carregar as informações.");
-    } else {
-      toggle();
-      return gains;
-    }
-  });
+  const { mutate, data: gainsResult, isLoading } = getStockGains();
 
-  const date = !!gainsResult?.data?.purchasedAt
-    ? format(new Date(gainsResult?.data?.purchasedAt), "'Dia' dd 'de' MMMM'", {
+  const obj = {
+    stockName: data[0]?.name,
+    purchasedAt: data[0]?.pricedAt,
+    purchasedAmount: data[0]?.lastPrice,
+  };
+
+  const date = !!gainsResult?.purchasedAt
+    ? format(new Date(gainsResult?.purchasedAt), "'Dia' dd 'de' MMMM'", {
         locale: ptBR,
       })
     : "";
+
+  useEffect(() => {
+    mutate(obj, {
+      onError(error) {
+        setModalVisible(false);
+        Alert.alert("Serviço indisponível.");
+      },
+    });
+  }, []);
 
   return (
     <>
       <View style={styles.container}>
         <View style={styles.alignItem}>
-          <View style={styles.circleContainer}>
-            {visible ? (
-              <Skeleton
-                colorMode="light"
-                width={70}
-                height={70}
-                radius="round"
-              />
-            ) : (
-              <Text style={styles.textName}>{gainsResult?.data?.name}</Text>
-            )}
-          </View>
+          <Skeleton
+            show={isLoading}
+            colorMode="light"
+            width={70}
+            height={70}
+            radius="round"
+          >
+            <View style={styles.circleContainer}>
+              <Text style={styles.textName}>{gainsResult?.name}</Text>
+            </View>
+          </Skeleton>
 
-          {visible ? (
-            <Skeleton colorMode="light" width={140} height={30} />
-          ) : (
+          <Skeleton show={isLoading} colorMode="light" width={120}>
             <Text style={styles.textDate}>{date}</Text>
-          )}
+          </Skeleton>
 
           <View style={styles.content}>
-            {visible ? (
-              <Skeleton colorMode="light" width={100} height={30} />
-            ) : (
+            <Skeleton show={isLoading} colorMode="light">
               <View style={styles.alignItem}>
                 <Text style={styles.title}>Comprado por</Text>
                 <Text style={styles.values}>
-                  R$ {gainsResult?.data?.purchasedAmount}
+                  R$ {gainsResult?.purchasedAmount}
                 </Text>
               </View>
-            )}
+            </Skeleton>
 
-            {visible ? (
-              <Skeleton colorMode="light" width={100} height={30} />
-            ) : (
+            <Skeleton show={isLoading} colorMode="light">
               <View style={styles.alignItem}>
                 <Text style={styles.title}>Último preço</Text>
-                <Text style={styles.values}>
-                  R$ {gainsResult?.data?.lastPrice}
-                </Text>
+                <Text style={styles.values}>R$ {gainsResult?.lastPrice}</Text>
               </View>
-            )}
+            </Skeleton>
 
-            {visible ? (
-              <Skeleton colorMode="light" width={100} height={30} />
-            ) : (
+            <Skeleton show={isLoading} colorMode="light">
               <View style={styles.alignItem}>
                 <Text style={styles.title}>Capital de ganhos</Text>
-                <Text style={styles.values}>
-                  {gainsResult?.data?.capitalGains}
-                </Text>
+                <Text style={styles.values}>{gainsResult?.capitalGains}</Text>
               </View>
-            )}
+            </Skeleton>
           </View>
         </View>
 
-        {visible ? (
-          <Skeleton colorMode="light" width={140} height={30} />
-        ) : (
+        <Skeleton show={isLoading} colorMode="light" width={100}>
           <TouchableOpacity
             onPress={handleGoToStockDetails}
             style={{ marginBottom: 10 }}
           >
             <Text>Ver histórico</Text>
           </TouchableOpacity>
-        )}
+        </Skeleton>
       </View>
     </>
   );
