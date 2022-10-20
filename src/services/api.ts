@@ -1,6 +1,8 @@
 import { useMutation } from "@tanstack/react-query";
 import { adgrowthAPI } from ".";
 import {
+  StockCompareRequest,
+  StockCompareResponse,
   StockGainsRequest,
   StockGainsResponse,
   StockHistoryResponse,
@@ -22,6 +24,18 @@ export const getStockGains = () => {
         params: {
           purchasedAt: data.purchasedAt,
           purchasedAmount: data.purchasedAmount,
+        },
+      })
+      .then((response) => response.data)
+  );
+};
+
+export const getStockCompared = () => {
+  return useMutation<StockCompareResponse, Error, StockCompareRequest>((data) =>
+    adgrowthAPI
+      .get(`/stocks/${data.stockName}/compare`, {
+        params: {
+          stocksToCompare: data.stocksToCompare,
         },
       })
       .then((response) => response.data)

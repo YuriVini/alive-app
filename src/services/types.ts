@@ -31,3 +31,18 @@ export type StockGainsRequest = {
   purchasedAt: Date;
   purchasedAmount: number;
 };
+
+export type StockCompareType = {
+  name: string;
+  lastPrice: number;
+  pricedAt: Date;
+};
+
+export type StockCompareResponse = {
+  lastPrices: StockCompareType[];
+};
+
+export type StockCompareRequest = {
+  stockName: string;
+  stocksToCompare: string[];
+};
