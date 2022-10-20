@@ -7,6 +7,7 @@ import {
   ListRenderItem,
   Text,
   TextInput,
+  TouchableOpacity,
   TouchableWithoutFeedback,
   View,
 } from "react-native";
@@ -22,6 +23,11 @@ import { StockCompareType } from "../../services/types";
 import { format } from "date-fns";
 import StockGains from "../StockGains";
 import { Modal } from "../../components/Modal";
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from "@react-navigation/native";
 
 const StockCompare = () => {
   const [stockModal, setStockModal] = useState<StockCompareType>(
@@ -31,7 +37,7 @@ const StockCompare = () => {
   const [visible, setVisible] = useState(false);
 
   const { stock } = useStockState();
-
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const { mutate, data: stockResult } = getStockCompared();
 
   const handleCompare = async (stocksCompare: string) => {
@@ -95,6 +101,12 @@ const StockCompare = () => {
       <>
         <Wrapper>
           <View style={styles.container}>
+            <TouchableOpacity
+              activeOpacity={0.7}
+              onPress={() => navigation.goBack()}
+            >
+              <AntDesign name="left" size={24} color={colors.white} />
+            </TouchableOpacity>
             <Text style={styles.textHeader}>Comparar {stock.name} com:</Text>
           </View>
 

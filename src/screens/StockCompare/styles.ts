@@ -4,10 +4,9 @@ import colors from "../../styles/colors";
 export default StyleSheet.create({
   container: {
     width: "100%",
-    paddingHorizontal: 40,
+    paddingHorizontal: 10,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
     marginVertical: 80,
   },
   content: {
@@ -20,6 +19,7 @@ export default StyleSheet.create({
   textHeader: {
     color: colors.white,
     fontSize: 32,
+    marginLeft: 50,
     fontWeight: "bold",
   },
   search: {
