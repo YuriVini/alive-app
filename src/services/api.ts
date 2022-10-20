@@ -9,8 +9,13 @@ import {
   StockQuoteResponse,
 } from "./types";
 
-export const getStockQuote = (stockName: string) =>
-  adgrowthAPI.get<StockQuoteResponse>(`/stock/${stockName}/quote`);
+export const getStockQuote = () => {
+  return useMutation<StockQuoteResponse, Error, { stockName: string }>((data) =>
+    adgrowthAPI
+      .get<StockQuoteResponse>(`/stock/${data.stockName}/quote`)
+      .then((response) => response.data)
+  );
+};
 
 export const getStockHistory = (stockName: string, from: number, to: number) =>
   adgrowthAPI.get<StockHistoryResponse>(`/stocks/${stockName}/history`, {
