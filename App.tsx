@@ -6,6 +6,7 @@ import {
 } from "react-native-safe-area-context";
 
 import "./src/config/ReactotronConfig";
+import GlobalContext from "./src/contexts";
 import Routes from "./src/routes";
 
 const App = () => {
@@ -13,10 +14,12 @@ const App = () => {
 
   return (
     <SafeAreaProvider initialMetrics={initialWindowMetrics}>
-      <QueryClientProvider client={queryClient}>
-        <StatusBar style="auto" />
-        <Routes />
-      </QueryClientProvider>
+      <GlobalContext>
+        <QueryClientProvider client={queryClient}>
+          <StatusBar style="auto" />
+          <Routes />
+        </QueryClientProvider>
+      </GlobalContext>
     </SafeAreaProvider>
   );
 };
