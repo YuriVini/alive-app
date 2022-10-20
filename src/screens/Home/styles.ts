@@ -98,4 +98,22 @@ export default StyleSheet.create({
     fontWeight: "400",
     color: colors.white,
   },
+  buttonContainer: {
+    width: "80%",
+    position: "absolute",
+    zIndex: 1,
+    top: 600,
+    ...Platform.select({
+      android: { elevation: 2 },
+      ios: {
+        shadowColor: colors.textLight,
+        shadowOffset: {
+          width: 0,
+          height: 5,
+        },
+        shadowOpacity: 0.3,
+        shadowRadius: 15,
+      },
+    }),
+  },
 });

@@ -24,6 +24,14 @@ import { format } from "date-fns";
 import StockBox from "../../components/StockBox";
 import { Modal } from "../../components/Modal";
 import StockGains from "../StockGains";
+import Button from "../../components/Button";
+import { useStockState } from "../../contexts/Stock";
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from "@react-navigation/native";
+import { ROUTES } from "../../routes/appRoutes";
 
 const Home = () => {
   const [search, setSearch] = useState("");
@@ -31,6 +39,9 @@ const Home = () => {
   const [visible, setVisible] = useState(false);
   const [showEmptyRender, setShowEmptyRender] = useState(false);
   const [searchResult, setSearchResult] = useState<StockQuoteResponse[]>([]);
+
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
+  const { addStock } = useStockState();
 
   const handleChange = async (value: string) => {
     setLoading(true);
@@ -49,6 +60,11 @@ const Home = () => {
     } finally {
       setTimeout(() => setLoading(false), 2000);
     }
+  };
+
+  const handleCompare = () => {
+    addStock(searchResult[0]);
+    navigation.navigate(ROUTES.STOCK_COMPARE);
   };
 
   const renderItem: ListRenderItem<StockQuoteResponse> = ({ item }) => {
@@ -115,8 +131,6 @@ const Home = () => {
                 style={{ marginEnd: 11, marginStart: -9 }}
               />
               <TextInput
-                maxFontSizeMultiplier={1.5}
-                testID="search-input"
                 placeholder="Buscar"
                 placeholderTextColor={colors.textLight}
                 selectionColor={colors.textLight}
@@ -135,6 +149,11 @@ const Home = () => {
               renderItem={renderItem}
               ListEmptyComponent={listEmptyComponent}
             />
+            <View style={styles.buttonContainer}>
+              {searchResult?.length > 0 && !loading && (
+                <Button title="Comparar essa ação" onPress={handleCompare} />
+              )}
+            </View>
           </View>
         </Wrapper>
         <Modal height={400} visible={visible} close={() => setVisible(false)}>
