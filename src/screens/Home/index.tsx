@@ -56,7 +56,7 @@ const Home = () => {
       }
     );
   };
-  console.tron.log!(searchResult);
+
   const handleCompare = () => {
     addStock(searchResult!);
     navigation.navigate(ROUTES.STOCK_COMPARE);
