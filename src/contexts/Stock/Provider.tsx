@@ -7,7 +7,7 @@ const StockProvider = ({ children }: { children?: ReactNode }) => {
   const [stock, setStock] = useState<StockQuoteResponse>(
     {} as StockQuoteResponse
   );
-  console.tron.log!(stock);
+
   const addStock = useCallback(
     (_newStock: StockQuoteResponse) => setStock(_newStock),
     []
